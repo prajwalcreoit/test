@@ -1,8 +1,15 @@
 Python		
-bin		
+bin
+lib		
 myapp		
 test.py	
 lib	
 pmd.txt
 .DS_Store
 .idea	
+.Python
+.idea/
+lib/
+myapp/
+pyvenv.cfg
+test.py
