@@ -21,8 +21,19 @@ def register_patient_validation(request):
         patient_obj.photo = request.FILES['picture']
         patient_obj.save()
 
-
         return render(request,'medic/login.html',{})
     else:
         return render(request,'medic/register.html',{'form':form})
+
+def add_medicine(request):
+    if request.POST:
+        med = Medicine()
+        form = MedicineForm(request.POST, instance=med)
+        if form.is_valid:
+            form.save()
+            return render(request, 'Medic/login.html', {})
+        else:
+            return render(request, 'Medic/login.html', {'form': form})
+    else:
+        return render(request, 'Medic/addmed.html', {'form':MedicineForm})
 

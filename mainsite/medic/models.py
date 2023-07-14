@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from django.forms import ModelForm
 # Create your models here.
 
 def user_directory_path(instance, filename):
@@ -47,4 +47,10 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class MedicineForm(ModelForm):
+    class Meta:
+        model = Medicine
+        fields = ['name','company']
 
