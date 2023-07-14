@@ -19,6 +19,9 @@ def register_patient_validation(request):
         patient_obj = Patient(name=name, phone_no=phone_no, password=password)
         patient_obj.save()
         patient_obj.photo = request.FILES['picture']
+        patient_obj.save()
+
+
         return render(request,'medic/login.html',{})
     else:
         return render(request,'medic/register.html',{'form':form})
