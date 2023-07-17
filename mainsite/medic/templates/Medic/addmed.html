@@ -1,0 +1,10 @@
+<form enctype="multipart/form-data" action="{% url 'medic:add_medicine' %}" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    <div style="padding:50;">
+        {{ field.label_tag }} {{ field }}
+        {{ field.errors }}
+    </div>
+    {% endfor %}
+    <input style="margin-left: 100" type="submit" value="Submit">
+</form>
