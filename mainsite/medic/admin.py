@@ -10,7 +10,7 @@ class DoctorAdmin(admin.ModelAdmin):
     list_display = ['id',"name", "phone_no"]
 
 class WardAdmin(admin.ModelAdmin):
-    list_display = ['id',"name", "price"]
+    list_display = ['id',"name", "number_of_beds", "price"]
 
 class ReceptionistAdmin(admin.ModelAdmin):
     list_display = ['id',"name", "phone_no"]
