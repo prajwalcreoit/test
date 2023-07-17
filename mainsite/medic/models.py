@@ -16,6 +16,7 @@ class Receptionist(models.Model):
 class Ward(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField(default=1000)
+    number_of_beds = models.IntegerField(default=100)
     def __str__(self):
         return self.name
 
