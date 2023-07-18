@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import *
 from .models import *
 from django.http import HttpResponse, HttpResponseRedirect
+from django.views import View
 
 # Create your views here.
 
@@ -37,3 +38,8 @@ def add_medicine(request):
     else:
         return render(request, 'Medic/addmed.html', {'form':MedicineForm})
 
+
+class list_doctors(View):
+    def get(self, request, *args, **kwargs):
+        doctors = Doctor.objects.all()
+        return render(request,'Medic/listing.html',{'doctors': doctors})
