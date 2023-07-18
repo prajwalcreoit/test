@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.views.generic.edit import FormView
 
 # Create your views here.
 
@@ -41,23 +42,30 @@ def add_medicine(request):
         return render(request, 'Medic/addmed.html', {'form':MedicineForm})
 
 
-class list_doctors(View):
+class ListDoctors(View):
     def get(self, request, *args, **kwargs):
         doctors = Doctor.objects.all()
         return render(request,'Medic/listing.html',{'doctors': doctors})
 
-class detail_medicine(DetailView):
+class DetailMedicine(DetailView):
     model = Medicine
 
     def get_context_date(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['now'] = timezone.now()
         return context
 
-class list_medicine(ListView):
+class ListMedicine(ListView):
     model = Medicine
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["now"] = timezone.now()
         return context
+
+class EditPatient(FormView):
+    template_name = 'Medic/register.html'
+    form_class = RegisterForm
+    success ='medic:register'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
