@@ -3,6 +3,8 @@ from .forms import *
 from .models import *
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 
 # Create your views here.
 
@@ -43,3 +45,19 @@ class list_doctors(View):
     def get(self, request, *args, **kwargs):
         doctors = Doctor.objects.all()
         return render(request,'Medic/listing.html',{'doctors': doctors})
+
+class detail_medicine(DetailView):
+    model = Medicine
+
+    def get_context_date(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['now'] = timezone.now()
+        return context
+
+class list_medicine(ListView):
+    model = Medicine
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["now"] = timezone.now()
+        return context
