@@ -77,6 +77,7 @@ class DetailMedicine(DetailView):
 
 class ListMedicine(ListView):
     model = Medicine
+    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
