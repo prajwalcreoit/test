@@ -6,6 +6,9 @@ from django.views import View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import FormView
+from django.views.generic.edit import UpdateView
+from django import forms
+from django.urls import reverse
 
 # Create your views here.
 
@@ -22,7 +25,7 @@ def register_patient_validation(request):
         password = form.cleaned_data["password"]
         patient_obj = Patient(name=name, phone_no=phone_no, password=password)
         patient_obj.save()
-        patient_obj.photo = request.FILES['picture']
+        patient_obj.photo = form.cleaned_data['picture']
         patient_obj.save()
 
         return render(request,'medic/login.html',{})
@@ -40,6 +43,23 @@ def add_medicine(request):
             return render(request, 'Medic/login.html', {'form': form})
     else:
         return render(request, 'Medic/addmed.html', {'form':MedicineForm})
+
+def edit_patient(request,pk):
+    if request.POST:
+        patient_obj = Patient.objects.get(pk=pk)
+        form = RegisterForm(request.POST,initial=patient_obj.__dict__)
+        if form.has_changed():
+            patient_obj.name = request.POST["name"]
+            patient_obj.phone_no = request.POST["phone_no"]
+            patient_obj.password = request.POST["password"]
+            patient_obj.save()
+            if request.FILES:
+                patient_obj.photo = request.FILES['picture']
+                patient_obj.save()
+            return HttpResponse("updated")
+        else:
+            return HttpResponseRedirect(reverse("medic:edit_patient", args=(pk,)))
+
 
 
 class ListDoctors(View):
@@ -62,10 +82,12 @@ class ListMedicine(ListView):
         context["now"] = timezone.now()
         return context
 
-class EditPatient(FormView):
-    template_name = 'Medic/register.html'
-    form_class = RegisterForm
-    success ='medic:register'
+class EditPatient(UpdateView):
+    model = Patient
+    fields = ['name','phone_no','photo','password']
+    template_name_suffix = '_update_form'
 
-    def form_valid(self, form):
-        return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = self.object.id
+        return context

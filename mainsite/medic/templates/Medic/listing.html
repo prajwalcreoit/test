@@ -1,0 +1,9 @@
+<h1>Doctors</h1>
+<table style="padding:50">
+    {% for dr in doctors %}
+    <tr>
+        <td>{{dr.name}}</td>
+        <td>{{dr.phone_no}}</td>
+    </tr>
+    {% endfor %}
+</table>

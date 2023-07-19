@@ -1,0 +1,9 @@
+<h1>Articles</h1>
+<h3>time: {{now|time}}</h3>
+<ul>
+{% for med in object_list %}
+    <li>{{ med.name }} - {{ med.company }}</li>
+{% empty %}
+    <li>No Medicine Availabel.</li>
+{% endfor %}
+</ul>
