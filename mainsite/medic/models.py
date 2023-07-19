@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
+from django.urls import reverse
 
 
 def user_directory_path(instance, filename):
@@ -51,6 +52,9 @@ class Patient(models.Model):
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, default=None)
     password = models.CharField(max_length=100, default='password')
     is_active = models.BooleanField(default=True)
+
+    def get_absolute_url(self):
+        return reverse("medic:index")
 
     def __str__(self):
         return self.name

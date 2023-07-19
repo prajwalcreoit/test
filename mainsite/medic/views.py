@@ -44,21 +44,21 @@ def add_medicine(request):
     else:
         return render(request, 'Medic/addmed.html', {'form':MedicineForm})
 
-def edit_patient(request,pk):
-    if request.POST:
-        patient_obj = Patient.objects.get(pk=pk)
-        form = RegisterForm(request.POST,initial=patient_obj.__dict__)
-        if form.has_changed():
-            patient_obj.name = request.POST["name"]
-            patient_obj.phone_no = request.POST["phone_no"]
-            patient_obj.password = request.POST["password"]
-            patient_obj.save()
-            if request.FILES:
-                patient_obj.photo = request.FILES['picture']
-                patient_obj.save()
-            return HttpResponse("updated")
-        else:
-            return HttpResponseRedirect(reverse("medic:edit_patient", args=(pk,)))
+# def edit_patient(request,pk):
+#     if request.POST:
+#         patient_obj = Patient.objects.get(pk=pk)
+#         form = RegisterForm(request.POST,initial=patient_obj.__dict__)
+#         if form.has_changed():
+#             patient_obj.name = request.POST["name"]
+#             patient_obj.phone_no = request.POST["phone_no"]
+#             patient_obj.password = request.POST["password"]
+#             patient_obj.save()
+#             if request.FILES:
+#                 patient_obj.photo = request.FILES['picture']
+#                 patient_obj.save()
+#             return HttpResponse("updated")
+#         else:
+#             return HttpResponseRedirect(reverse("medic:edit_patient", args=(pk,)))
 
 
 
