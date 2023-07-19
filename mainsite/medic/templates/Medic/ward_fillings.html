@@ -1,0 +1,26 @@
+
+<h2>Ward: {{ ward.name }}</h2>
+<h4>Price: {{ward.price}}</h4>
+<h4>Number of Beds: {{ward.number_of_beds}}</h4>
+
+<ol>
+  {% for pat in page_obj %}
+    <li>{{ pat.name }}</li>
+  {% endfor %}
+</ol>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>

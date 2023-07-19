@@ -10,6 +10,7 @@ from django.views.generic.edit import UpdateView
 from django import forms
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import DeleteView
+from django.views.generic.detail import SingleObjectMixin
 
 # Create your views here.
 
@@ -32,6 +33,7 @@ def register_patient_validation(request):
         return render(request,'medic/login.html',{})
     else:
         return render(request,'medic/register.html',{'form':form})
+
 
 def add_medicine(request):
     if request.POST:
@@ -62,11 +64,11 @@ def add_medicine(request):
 #             return HttpResponseRedirect(reverse("medic:edit_patient", args=(pk,)))
 
 
-
 class ListDoctors(View):
     def get(self, request, *args, **kwargs):
         doctors = Doctor.objects.all()
         return render(request,'Medic/listing.html',{'doctors': doctors})
+
 
 class DetailMedicine(DetailView):
     model = Medicine
@@ -74,6 +76,7 @@ class DetailMedicine(DetailView):
     def get_context_date(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
 
 class ListMedicine(ListView):
     model = Medicine
@@ -83,6 +86,7 @@ class ListMedicine(ListView):
         context = super().get_context_data(**kwargs)
         context["now"] = timezone.now()
         return context
+
 
 class EditPatient(UpdateView):
     model = Patient
@@ -94,6 +98,24 @@ class EditPatient(UpdateView):
         context['pk'] = self.object.id
         return context
 
+
 class DeletePatient(DeleteView):
     model = Patient
     success_url = reverse_lazy('medic:index')
+
+
+class WardFillings(SingleObjectMixin, ListView):
+    paginate_by = 3
+    template_name = 'Medic/ward_fillings.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Ward.objects.all())
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ward'] = self.object
+        return context
+
+    def get_queryset(self):
+        return self.object.patient_set.all()
