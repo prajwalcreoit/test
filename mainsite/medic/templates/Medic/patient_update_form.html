@@ -1,11 +1,7 @@
-<form enctype="multipart/form-data" action="{% url 'medic:edit_patient' pk %}" method="post">
+<form enctype="multipart/form-data" method="post">
     {% csrf_token %}
-    {{ form.non_field_errors }}
-    {% for field in form %}
     <div style="padding:50;">
-        {{ field.label_tag }} {{ field }}
-        {{ field.errors }}
+        {{form}}
     </div>
-    {% endfor %}
     <input style="margin-left: 100" type="submit" value="Update">
 </form>

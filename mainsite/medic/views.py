@@ -8,7 +8,8 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import FormView
 from django.views.generic.edit import UpdateView
 from django import forms
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views.generic.edit import DeleteView
 
 # Create your views here.
 
@@ -91,3 +92,7 @@ class EditPatient(UpdateView):
         context = super().get_context_data(**kwargs)
         context['pk'] = self.object.id
         return context
+
+class DeletePatient(DeleteView):
+    model = Patient
+    success_url = reverse_lazy('medic:index')
