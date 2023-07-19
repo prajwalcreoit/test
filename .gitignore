@@ -13,3 +13,6 @@ lib/
 myapp/
 pyvenv.cfg
 test.py
+mainsite/Media
+mainsite/polls/migrations
+mainsite/medic/migrations
