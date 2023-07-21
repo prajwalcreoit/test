@@ -1,9 +1,20 @@
 from django.urls import path
 from . import views
+from django.urls import path, include
+from django.contrib.auth.models import User
+from rest_framework import routers, serializers, viewsets
+from django.urls import include, path
+from rest_framework import routers
+
+# Routers provide an easy way of automatically determining the URL conf.
+router = routers.DefaultRouter()
+router.register(r'patients', views.PatientViewSet)
+router.register(r'doctors', views.DoctorViewSet)
 
 app_name = "medic"
 urlpatterns = [
     path('',views.register_patient, name='index'),
+    path('apis/', include(router.urls)),
     path('register/', views.register_patient_validation, name='register_validation'),
     path('wardfillings/<int:pk>', views.WardFillings.as_view(), name='ward_fillings'),
     path('addmed/', views.add_medicine, name='add_medicine'),
