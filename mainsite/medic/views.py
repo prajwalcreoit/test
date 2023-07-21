@@ -114,6 +114,10 @@ from rest_framework import viewsets
 from rest_framework import permissions
 from .serializers import *
 
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+
 
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all().order_by()
@@ -125,3 +129,28 @@ class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+def patient_list(request):
+    if request.method == 'GET':
+        patients = Patient.objects.all()
+        serializer = PatientSerializer(patients, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = PatientSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+def patient_detail(request,pk):
+    try:
+        patient = Patient.objects.get(pk=pk)
+    except Patient.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = PatientSerializer(patient)
+        return JsonResponse(serializer.data)

@@ -14,7 +14,11 @@ router.register(r'doctors', views.DoctorViewSet)
 app_name = "medic"
 urlpatterns = [
     path('',views.register_patient, name='index'),
+
     path('apis/', include(router.urls)),
+    path('apis/patlis/', views.patient_list),
+    path('apis/patinfo/<int:pk>', views.patient_detail),
+
     path('register/', views.register_patient_validation, name='register_validation'),
     path('wardfillings/<int:pk>', views.WardFillings.as_view(), name='ward_fillings'),
     path('addmed/', views.add_medicine, name='add_medicine'),
