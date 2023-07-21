@@ -113,10 +113,12 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 from .serializers import *
-
+from rest_framework import status
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 
 
 class PatientViewSet(viewsets.ModelViewSet):
@@ -130,26 +132,28 @@ class DoctorViewSet(viewsets.ModelViewSet):
     serializer_class = DoctorSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
+@api_view(['GET', 'POST'])
+@permission_classes((permissions.AllowAny,))
 def patient_list(request):
     if request.method == 'GET':
         patients = Patient.objects.all()
         serializer = PatientSerializer(patients, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = PatientSerializer(data=data)
+        serializer = PatientSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def patient_detail(request,pk):
+@api_view(['GET','PUT', 'DELETE'])
+@permission_classes((permissions.AllowAny,))
+def patient_detail(request, pk):
     try:
         patient = Patient.objects.get(pk=pk)
     except Patient.DoesNotExist:
-        return HttpResponse(status=404)
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = PatientSerializer(patient)
