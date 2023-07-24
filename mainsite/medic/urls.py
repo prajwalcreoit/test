@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 from django.urls import include, path
 from rest_framework import routers
+from rest_framework.urlpatterns import format_suffix_patterns
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -18,6 +19,8 @@ urlpatterns = [
     path('apis/', include(router.urls)),
     path('apis/patlis/', views.patient_list),
     path('apis/patinfo/<int:pk>', views.patient_detail),
+    path('apis/medlis/', views.MedicineList.as_view()),
+    path('apis/medinfo/<int:pk>', views.MedicineInfo.as_view()),
 
     path('register/', views.register_patient_validation, name='register_validation'),
     path('wardfillings/<int:pk>', views.WardFillings.as_view(), name='ward_fillings'),

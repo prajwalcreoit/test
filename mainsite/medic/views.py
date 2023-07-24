@@ -119,6 +119,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework import generics
 
 
 class PatientViewSet(viewsets.ModelViewSet):
@@ -134,7 +135,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.AllowAny,))
-def patient_list(request):
+def patient_list(request, format=None):
     if request.method == 'GET':
         patients = Patient.objects.all()
         serializer = PatientSerializer(patients, many=True)
@@ -149,7 +150,7 @@ def patient_list(request):
 
 @api_view(['GET','PUT', 'DELETE'])
 @permission_classes((permissions.AllowAny,))
-def patient_detail(request, pk):
+def patient_detail(request, pk, format=None):
     try:
         patient = Patient.objects.get(pk=pk)
     except Patient.DoesNotExist:
@@ -158,3 +159,21 @@ def patient_detail(request, pk):
     if request.method == 'GET':
         serializer = PatientSerializer(patient)
         return JsonResponse(serializer.data)
+    elif request.method == 'PUT':
+        serializer = PatientSerializer(patient, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        patient.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class MedicineList(generics.ListCreateAPIView):
+    queryset = Medicine.objects.all()
+    serializer_class = MedicineSerializer
+
+
+class MedicineInfo(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Medicine.objects.all()
+    serializer_class = MedicineSerializer

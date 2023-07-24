@@ -13,3 +13,8 @@ class DoctorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Doctor
         fields = ['name','phone_no','password']
+
+class MedicineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medicine
+        fields = ['name', 'company']
