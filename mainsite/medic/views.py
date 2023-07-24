@@ -120,6 +120,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import generics
+from rest_framework import mixins
 
 
 class PatientViewSet(viewsets.ModelViewSet):
@@ -168,6 +169,32 @@ def patient_detail(request, pk, format=None):
     elif request.method == 'DELETE':
         patient.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class DoctorList(mixins.ListModelMixin,
+                 mixins.CreateModelMixin,
+                 generics.GenericAPIView):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class DoctorInfo(mixins.RetrieveModelMixin,
+                 mixins.UpdateModelMixin,
+                 mixins.DestroyModelMixin,
+                 generics.GenericAPIView):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 
 class MedicineList(generics.ListCreateAPIView):
     queryset = Medicine.objects.all()

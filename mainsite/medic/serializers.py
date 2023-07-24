@@ -18,3 +18,8 @@ class MedicineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medicine
         fields = ['name', 'company']
+
+class WardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ward
+        fields = ['name', 'price', 'number_of_beds']

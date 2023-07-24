@@ -21,6 +21,8 @@ urlpatterns = [
     path('apis/patinfo/<int:pk>', views.patient_detail),
     path('apis/medlis/', views.MedicineList.as_view()),
     path('apis/medinfo/<int:pk>', views.MedicineInfo.as_view()),
+    path('apis/doclis/', views.DoctorList.as_view()),
+    path('apis/docinfo/<int:pk>', views.DoctorInfo.as_view()),
 
     path('register/', views.register_patient_validation, name='register_validation'),
     path('wardfillings/<int:pk>', views.WardFillings.as_view(), name='ward_fillings'),
