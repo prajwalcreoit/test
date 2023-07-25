@@ -37,6 +37,7 @@ class Doctor(models.Model):
 class Medicine(models.Model):
     name = models.CharField(max_length=100)
     company = models.CharField(max_length=200, default="Govt")
+    owner = models.ForeignKey('auth.User', related_name='medicines', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name

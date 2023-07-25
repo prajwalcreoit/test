@@ -121,7 +121,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import generics
 from rest_framework import mixins
-
+from django.contrib.auth.models import User
+from .permissions import *
 
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all().order_by()
@@ -137,6 +138,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.AllowAny,))
 def patient_list(request, format=None):
+
     if request.method == 'GET':
         patients = Patient.objects.all()
         serializer = PatientSerializer(patients, many=True)
@@ -200,7 +202,23 @@ class MedicineList(generics.ListCreateAPIView):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
 
 class MedicineInfo(generics.RetrieveUpdateDestroyAPIView):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

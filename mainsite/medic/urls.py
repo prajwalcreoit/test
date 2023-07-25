@@ -17,6 +17,8 @@ urlpatterns = [
     path('',views.register_patient, name='index'),
 
     path('apis/', include(router.urls)),
+    path('apis/userlis/',views.UserList.as_view()),
+    path('apis/userinfo/<int:pk>/', views.UserDetail.as_view()),
     path('apis/patlis/', views.patient_list),
     path('apis/patinfo/<int:pk>', views.patient_detail),
     path('apis/medlis/', views.MedicineList.as_view()),
