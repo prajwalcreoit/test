@@ -205,13 +205,13 @@ class MedicineList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
 
 
 class MedicineInfo(generics.RetrieveUpdateDestroyAPIView):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
 
 
 class UserList(generics.ListAPIView):

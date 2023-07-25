@@ -2,9 +2,10 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
+from rest_framework.reverse import reverse_lazy
 
-class UserSerializer(serializers.ModelSerializer):
-    medicines = serializers.PrimaryKeyRelatedField(many=True, queryset=Medicine.objects.all())
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    medicines = serializers.HyperlinkedRelatedField(many=True, queryset=Medicine.objects.all(), view_name='medic:medicine_info')
 
     class Meta:
         model = User
