@@ -21,8 +21,8 @@ urlpatterns = [
     path('apis/userinfo/<int:pk>/', views.UserDetail.as_view()),
     path('apis/patlis/', views.patient_list),
     path('apis/patinfo/<int:pk>', views.patient_detail),
-    path('apis/medlis/', views.MedicineList.as_view()),
-    path('apis/medinfo/<int:pk>', views.MedicineInfo.as_view()),
+    path('apis/medlis/', views.MedicineList.as_view(), name='medicine_list'),
+    path('apis/medinfo/<int:pk>', views.MedicineInfo.as_view(), name='medicine_info'),
     path('apis/doclis/', views.DoctorList.as_view()),
     path('apis/docinfo/<int:pk>', views.DoctorInfo.as_view()),
 
