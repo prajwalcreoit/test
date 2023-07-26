@@ -12,6 +12,10 @@ router = routers.DefaultRouter()
 router.register(r'patients', views.PatientViewSet)
 router.register(r'doctors', views.DoctorViewSet)
 
+name_url = views.PatientViewSet.as_view({
+    'get' : 'name'
+})
+
 app_name = "medic"
 urlpatterns = [
     path('',views.register_patient, name='index'),
@@ -22,7 +26,7 @@ urlpatterns = [
     path('apis/patlis/', views.patient_list),
     path('apis/patinfo/<int:pk>', views.patient_detail),
     path('apis/medlis/', views.MedicineList.as_view(), name='medicine_list'),
-    path('apis/medinfo/<int:pk>', views.MedicineInfo.as_view(), name='medicine_info'),
+    path('apis/medinfo/<str:name>/<str:company>', views.MedicineInfo.as_view(), name='medicine_info'),
     path('apis/doclis/', views.DoctorList.as_view()),
     path('apis/docinfo/<int:pk>', views.DoctorInfo.as_view()),
 

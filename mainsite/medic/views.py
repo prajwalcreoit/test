@@ -118,16 +118,43 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework import generics
 from rest_framework import mixins
 from django.contrib.auth.models import User
 from .permissions import *
+from rest_framework.decorators import action
+from rest_framework import permissions
+from rest_framework import renderers
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from django.shortcuts import get_object_or_404
+
+class MultipleFieldLookupMixin:
+    """
+    Apply this mixin to any view or viewset to get multiple field filtering
+    based on a `lookup_fields` attribute, instead of the default single field filtering.
+    """
+    def get_object(self):
+        queryset = self.get_queryset()             # Get the base queryset
+        queryset = self.filter_queryset(queryset)  # Apply any filter backends
+        filter = {}
+        for field in self.lookup_fields:
+            if self.kwargs.get(field): # Ignore empty fields.
+                filter[field] = self.kwargs[field]
+        obj = get_object_or_404(queryset, **filter)  # Lookup the object
+        self.check_object_permissions(self.request, obj)
+        return obj
+
 
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all().order_by()
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
+    def name(self, request, *args, **kwargs):
+        patient = self.get_object()
+        return Response(patient.name)
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
@@ -153,6 +180,7 @@ def patient_list(request, format=None):
 
 @api_view(['GET','PUT', 'DELETE'])
 @permission_classes((permissions.AllowAny,))
+@renderer_classes([BrowsableAPIRenderer])
 def patient_detail(request, pk, format=None):
     try:
         patient = Patient.objects.get(pk=pk)
@@ -208,8 +236,9 @@ class MedicineList(generics.ListCreateAPIView):
     permission_classes = [IsOwnerOrReadOnly]
 
 
-class MedicineInfo(generics.RetrieveUpdateDestroyAPIView):
+class MedicineInfo(MultipleFieldLookupMixin,generics.RetrieveUpdateDestroyAPIView):
     queryset = Medicine.objects.all()
+    lookup_fields = ['name', 'company']
     serializer_class = MedicineSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
