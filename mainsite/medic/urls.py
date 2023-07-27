@@ -12,10 +12,6 @@ router = routers.DefaultRouter()
 router.register(r'patients', views.PatientViewSet)
 router.register(r'doctors', views.DoctorViewSet)
 
-name_url = views.PatientViewSet.as_view({
-    'get' : 'name'
-})
-
 app_name = "medic"
 urlpatterns = [
     path('',views.register_patient, name='index'),

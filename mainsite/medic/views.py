@@ -151,10 +151,10 @@ class PatientViewSet(viewsets.ModelViewSet):
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
-    def name(self, request, *args, **kwargs):
+    @action(detail=True, methods=['get'], url_path='name_det')
+    def name_detail(self, request, *args, **kwargs):
         patient = self.get_object()
-        return Response(patient.name)
+        return Response({'name': patient.name})
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
