@@ -156,7 +156,6 @@ class PatientViewSet(viewsets.ModelViewSet):
         patient = self.get_object()
         return Response({'name': patient.name})
 
-
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer

@@ -17,11 +17,16 @@ class PatientSerializer(serializers.HyperlinkedModelSerializer):
         model = Patient
         fields = ['name', 'phone_no','photo','password']
 
-
 class DoctorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Doctor
         fields = ['name','phone_no','password']
+
+    def validate(self, data):
+        if data['name'] == data['password'] or len(data['password']) <= 5:
+            raise serializers.ValidationError('Invalid Password: password must not same as name and must be minimum 5 character in length.')
+        else:
+            return data
 
 class MedicineSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
