@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
 from rest_framework.reverse import reverse_lazy
+from rest_framework.validators import UniqueTogetherValidator
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     medicines = serializers.HyperlinkedRelatedField(many=True, queryset=Medicine.objects.all(), view_name='medic:medicine_info')
@@ -16,6 +17,13 @@ class PatientSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Patient
         fields = ['name', 'phone_no','photo','password']
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Patient.objects.all(),
+                fields=['name', 'phone_no'],
+                message='Patient With same number is already registered'
+            )
+        ]
 
 class DoctorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
