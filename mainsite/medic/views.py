@@ -11,6 +11,7 @@ from django import forms
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import DeleteView
 from django.views.generic.detail import SingleObjectMixin
+from rest_framework import filters
 
 # Create your views here.
 
@@ -150,7 +151,11 @@ class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all().order_by()
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter,filters.OrderingFilter]
     filterset_fields = ['password']
+    search_fields = ['name', 'phone_no']
+    ordering_fields = ['name', 'password']
+    ordering = ['name']
 
     @action(detail=True, methods=['get'], url_path='name_det')
     def name_detail(self, request, *args, **kwargs):
