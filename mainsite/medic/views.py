@@ -150,6 +150,7 @@ class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all().order_by()
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filterset_fields = ['password']
 
     @action(detail=True, methods=['get'], url_path='name_det')
     def name_detail(self, request, *args, **kwargs):
