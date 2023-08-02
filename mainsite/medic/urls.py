@@ -11,6 +11,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 router = routers.DefaultRouter()
 router.register(r'patients', views.PatientViewSet)
 router.register(r'doctors', views.DoctorViewSet)
+router.register(r'wards', views.WardViewSet)
 
 app_name = "medic"
 urlpatterns = [

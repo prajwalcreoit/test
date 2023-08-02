@@ -129,6 +129,7 @@ from rest_framework import permissions
 from rest_framework import renderers
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from django.shortcuts import get_object_or_404
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 class MultipleFieldLookupMixin:
     """
@@ -151,13 +152,14 @@ class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all().order_by()
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [BasicAuthentication]
     filter_backends = [filters.SearchFilter,filters.OrderingFilter]
     filterset_fields = ['password']
     search_fields = ['name', 'phone_no']
-    ordering_fields = ['name', 'password']
+    ordering_fields = ['name', 'date_admitted']
     ordering = ['name']
 
-    @action(detail=True, methods=['get'], url_path='name_det')
+    @action(detail=True, methods=['get','post'], url_path='name_det')
     def name_detail(self, request, *args, **kwargs):
         patient = self.get_object()
         return Response({'name': patient.name})
@@ -166,6 +168,35 @@ class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
     permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [BasicAuthentication]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'phone_no']
+    ordering_fields = ['name']
+
+    @action(detail=True, methods=['get'], url_path='patients')
+    def patients_details(self, request, *args, **kwargs):
+        doctor = self.get_object()
+        patients = doctor.patient_set.all()
+        count = patients.count()
+        return Response({'no_of_patients': count,
+                         'patients': PatientSerializer(patients, many=True).data})
+
+class WardViewSet(viewsets.ModelViewSet):
+    queryset = Ward.objects.all()
+    serializer_class = WardSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name']
+    ordering_fields = ['name','price']
+
+    @action(detail=True, methods=['get'], url_path='patients')
+    def patients_details(self,request, *args, **kwargs):
+        ward = self.get_object()
+        patients = ward.patient_set.all()
+        count = patients.count()
+        return Response({'no_of_patients': count,
+                         'patients': PatientSerializer(patients, many=True).data})
+
 
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.AllowAny,))

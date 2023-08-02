@@ -12,19 +12,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['id', 'username', 'medicines']
 
-
-class PatientSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Patient
-        fields = ['name', 'phone_no','photo','password']
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Patient.objects.all(),
-                fields=['name', 'phone_no'],
-                message='Patient With same number is already registered'
-            )
-        ]
-
 class DoctorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Doctor
@@ -36,13 +23,34 @@ class DoctorSerializer(serializers.HyperlinkedModelSerializer):
         else:
             return data
 
+class WardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ward
+        fields = ['name', 'price', 'number_of_beds']
+
 class MedicineSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = Medicine
         fields = ['name', 'company', 'owner']
 
-class WardSerializer(serializers.ModelSerializer):
+class PatientSerializer(serializers.HyperlinkedModelSerializer):
+    treated_by = DoctorSerializer(many=True, read_only=True)
+    prescribed = MedicineSerializer(many=True, read_only=True)
+    ward = WardSerializer(read_only=True)
+    password = serializers.CharField(style={'input_type': 'password'})
     class Meta:
-        model = Ward
-        fields = ['name', 'price', 'number_of_beds']
+        model = Patient
+        fields = ['name', 'phone_no','photo','password','treated_by','ward','date_admitted','prescribed']
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Patient.objects.all(),
+                fields=['name', 'phone_no'],
+                message='Patient With same number is already registered'
+            )
+        ]
+
+
+
+
+

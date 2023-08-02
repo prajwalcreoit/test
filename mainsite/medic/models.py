@@ -3,7 +3,9 @@ from django.utils import timezone
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
 from django.urls import reverse
-
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+from django.db.models.signals import post_save
 
 def user_directory_path(instance, filename):
     return "pateint/{0}/{1}".format(instance.id, filename)
@@ -59,7 +61,6 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class MedicineForm(ModelForm):
     class Meta:
