@@ -130,6 +130,8 @@ from rest_framework import renderers
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from .auth import TokenAuthentication
+
 
 class MultipleFieldLookupMixin:
     """
@@ -152,7 +154,7 @@ class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all().order_by()
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [TokenAuthentication]
     filter_backends = [filters.SearchFilter,filters.OrderingFilter]
     filterset_fields = ['password']
     search_fields = ['name', 'phone_no']
@@ -168,7 +170,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # authentication_classes = [BasicAuthentication]
+    authentication_classes = [TokenAuthentication]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'phone_no']
     ordering_fields = ['name']
@@ -185,6 +187,7 @@ class WardViewSet(viewsets.ModelViewSet):
     queryset = Ward.objects.all()
     serializer_class = WardSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name','price']

@@ -6,6 +6,7 @@ from rest_framework import routers, serializers, viewsets
 from django.urls import include, path
 from rest_framework import routers
 from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.authtoken.views import obtain_auth_token
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -16,6 +17,7 @@ router.register(r'wards', views.WardViewSet)
 app_name = "medic"
 urlpatterns = [
     path('',views.register_patient, name='index'),
+    path('auth/',obtain_auth_token),
 
     path('apis/', include(router.urls)),
     path('apis/userlis/',views.UserList.as_view()),
